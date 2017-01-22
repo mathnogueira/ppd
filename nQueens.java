@@ -1,16 +1,34 @@
 import java.util.Scanner;
 
 class nQueens {
-    static int[][] board;
-    static int size;
-    static boolean solveProblem(int col){
-        if (col>size-1)
+    int[][] board;
+    int size;
+    int rainhasThread;
+    int numeroThread;
+
+    public nQueens(int size, int rainhasThread,  int thread) {
+        this.size = size;
+        this.rainhasThread = rainhasThread;
+        this.numeroThread = thread;
+        board = new int[size][size];
+
+        int i,j;
+        for(i=0;i<size;i++)
+            for(j=0;j<size;j++)
+                board[i][j]=0;
+    }
+
+    boolean solveProblem(int col){
+        if (col>=size)
             return true;
-        for (int i=0;i<size;i++){
+        int inicio = (this.numeroThread) * this.rainhasThread;
+        int fim = inicio + this.rainhasThread;
+        System.out.println("Inicio: " + inicio + "; Fim: " + fim);
+        for (int i=inicio;i<fim;i++) {
             if(isSafe(i,col)){
                 board[i][col]=1;
-                if(_solveProblem(col+1)) {
-                    System.out.println("Solution:");
+                if(parallelSolveProblem(col+1)) {
+                    System.out.println("Solução:");
                     printBoard();
                     board[i][col] = 0;
                 }
@@ -20,28 +38,27 @@ class nQueens {
         return false;
     }
 
-    static boolean _solveProblem(int col){
+    boolean parallelSolveProblem(int col){
         if (col>size-1)
             return true;
         for (int i=0;i<size;i++){
             if(isSafe(i,col)){
-                success(col, i);
+                board[i][col]=1;
+                if(parallelSolveProblem(col+1)) {
+                    System.out.println("Solução:");
+                    printBoard();
+                    board[i][col] = 0;
+                }
+                board[i][col]=0;
             }
         }
         return false;
     }
 
-    static void success(int col, int i) {
-        board[i][col]=1;
-        if(_solveProblem(col+1)) {
-            System.out.println("Solution:");
-            printBoard();
-            board[i][col] = 0;
+    boolean isSafe(int row,int col){
+        if (row >= size || col >= size) {
+            System.out.println("Linha: " + row + "; Coluna: " + col);
         }
-        board[i][col]=0;
-    }
-
-    static boolean isSafe(int row,int col){
         int i,j;
         for(i=0;i<col;i++)
             if (board[row][i]==1)
@@ -55,7 +72,7 @@ class nQueens {
         return true;
     }
 
-    static void printBoard(){
+    void printBoard(){
         for (int i=0;i<size;i++) {
             System.out.print("\n");
             for (int j=0;j<size;j++) {
@@ -67,19 +84,14 @@ class nQueens {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.print("Enter n: ");
-        size = in.nextInt();
-        board = new int[size][size];
-        int i,j;
-        for(i=0;i<size;i++)
-            for(j=0;j<size;j++)
-                board[i][j]=0;
-        // if (solveProblem(0)) {
-        //     printBoard();
-        // }
-        // else {
-        //     System.out.println("No more solutions...");
-        // }
-        solveProblem(0);
+        System.out.print("Numero de rainhas: ");
+        int rainhas = in.nextInt();
+        System.out.print("Rainhas por thread: ");
+        int rainhasThread = in.nextInt();
+        int numeroThreads = rainhas / rainhasThread;
+        for (int i = 0; i < numeroThreads; i++) {
+            nQueens solucao = new nQueens(rainhas, rainhasThread, i);
+            solucao.solveProblem(0);
+        }
     }
 }
