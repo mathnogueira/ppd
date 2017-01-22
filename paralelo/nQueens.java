@@ -1,5 +1,3 @@
-import sun.awt.Mutex;
-
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
