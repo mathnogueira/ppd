@@ -28,8 +28,6 @@ class nQueens {
             if(isSafe(i,col)){
                 board[i][col]=1;
                 if(parallelSolveProblem(col+1)) {
-                    System.out.println("Solução:");
-                    printBoard();
                     board[i][col] = 0;
                 }
                 board[i][col]=0;
@@ -45,7 +43,6 @@ class nQueens {
             if(isSafe(i,col)){
                 board[i][col]=1;
                 if(parallelSolveProblem(col+1)) {
-                    System.out.println("Solução:");
                     printBoard();
                     board[i][col] = 0;
                 }
@@ -83,11 +80,8 @@ class nQueens {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        System.out.print("Numero de rainhas: ");
-        int rainhas = in.nextInt();
-        System.out.print("Rainhas por thread: ");
-        int rainhasThread = in.nextInt();
+        int rainhas = Integer.parseInt(args[0]);
+        int rainhasThread = Integer.parseInt(args[1]);
         int numeroThreads = rainhas / rainhasThread;
         for (int i = 0; i < numeroThreads; i++) {
             nQueens solucao = new nQueens(rainhas, rainhasThread, i);

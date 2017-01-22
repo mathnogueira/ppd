@@ -60,7 +60,7 @@ class nQueens implements Runnable {
             if(isSafe(i,col)){
                 board[i][col]=1;
                 if(parallelSolveProblem(col+1)) {
-                    printBoard();
+                    //printBoard();
                     board[i][col] = 0;
                 }
                 board[i][col]=0;

@@ -1,0 +1,15 @@
+2 Threads
+
+04 rainhas: 0.0661s
+06 rainhas: 0.0631s
+08 rainhas: 0.0765s
+10 rainhas: 0.1023s
+12 rainhas: 0.2324s
+14 rainhas: 4.7665s
+
+4 Threads
+
+04 rainhas: 0.0685s
+08 rainhas: 0.0778s
+12 rainhas: 0.2416s
+14 rainhas: 4.4830s

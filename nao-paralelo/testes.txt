@@ -1,0 +1,6 @@
+04 rainhas: 0.0639s
+06 rainhas: 0.0702s
+08 rainhas: 0.0744s
+10 rainhas: 0.0942s
+12 rainhas: 0.3653s
+14 rainhas: 14.1556s
