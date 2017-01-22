@@ -70,6 +70,7 @@ class nQueens implements Runnable {
     }
 
     boolean isSafe(int row,int col){
+        // Retorna true se a casa pode conter uma rainha.
         int i,j;
         for(i=0;i<col;i++)
             if (board[row][i]==1)
