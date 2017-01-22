@@ -73,6 +73,7 @@ class nQueens implements Runnable {
     void printBoard(){
         try {
             semaphore.acquire();
+            System.out.println("Solução encontrada pela thread " + this.numeroThread);
             for (int i = 0; i < size; i++) {
                 System.out.print("\n");
                 for (int j = 0; j < size; j++) {
@@ -92,11 +93,14 @@ class nQueens implements Runnable {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        System.out.print("Numero de rainhas: ");
-        int rainhas = in.nextInt();
-        System.out.print("Rainhas por thread: ");
-        int rainhasThread = in.nextInt();
+//        Scanner in = new Scanner(System.in);
+//        System.out.print("Numero de rainhas: ");
+//        int rainhas = in.nextInt();
+//        System.out.print("Rainhas por thread: ");
+//        int rainhasThread = in.nextInt();
+	System.out.println(args[1]);
+        int rainhas = Integer.parseInt(args[0]);
+        int rainhasThread = Integer.parseInt(args[1]);
         int numeroThreads = rainhas / rainhasThread;
         for (int i = 0; i < numeroThreads; i++) {
             nQueens solucao = new nQueens(rainhas, rainhasThread, i);
