@@ -21,6 +21,20 @@ class nQueens implements Runnable {
     }
 
     boolean solveProblem(int col){
+        // Essa função só executa a primeira iteração da recursão, então ela só verifica
+        // a solução na primeira coluna do tabuleiro. O restante das colunas é verificada pela
+        // função parallelSolveProblem.
+        // Essa função também é a função de entrada da thread, e ela é responsável por
+        // dizer quais são as casas que a thread pode verificar na primeira coluna (para evitar
+        // que uma thread encontre uma solução já encontrada por outra). 
+        // Essa função divide a primeira coluna entre as N threads do tabuleiro (note que isso só funciona
+        // se o número de rainhas for divisível pelo número de threads). Portanto, se tivermos um tabuleiro
+        // 10x10, e ele for dividido para 5 threads, a divisão ficará assim:
+        // Thread 0: Verifica todas as soluções que na primeira coluna estão nas casas (0,0) e (0,1)
+        // Thread 1: Verifica todas as soluções que na primeira coluna estão nas casas (0,2) e (0,3)
+        // Thread 2: Verifica todas as soluções que na primeira coluna estão nas casas (0,4) e (0,5)
+        // Thread 3: Verifica todas as soluções que na primeira coluna estão nas casas (0,6) e (0,7)
+        // Thread 4: Verifica todas as soluções que na primeira coluna estão nas casas (0,8) e (0,9)
         if (col>=size)
             return true;
         int inicio = (this.numeroThread) * this.rainhasThread;
@@ -29,8 +43,6 @@ class nQueens implements Runnable {
             if(isSafe(i,col)){
                 board[i][col]=1;
                 if(parallelSolveProblem(col+1)) {
-                    System.out.println("Solução:");
-                    printBoard();
                     board[i][col] = 0;
                 }
                 board[i][col]=0;
@@ -40,13 +52,14 @@ class nQueens implements Runnable {
     }
 
     boolean parallelSolveProblem(int col){
+        // Essa função executa de forma recursiva o algoritmo para procurar a solução
+        // nas colunas 1 até a coluna N.
         if (col>size-1)
             return true;
         for (int i=0;i<size;i++){
             if(isSafe(i,col)){
                 board[i][col]=1;
                 if(parallelSolveProblem(col+1)) {
-                    System.out.println("Solução:");
                     printBoard();
                     board[i][col] = 0;
                 }
@@ -71,6 +84,9 @@ class nQueens implements Runnable {
     }
 
     void printBoard(){
+        // Aqui tem um semafaro para que as saídas são saiam todas embaralhadas
+        // Então quando uma thread está escrevendo uma solução na saída padrão, a outra
+        // tem que esperar ela terminar.
         try {
             semaphore.acquire();
             System.out.println("Solução encontrada pela thread " + this.numeroThread);
@@ -103,9 +119,12 @@ class nQueens implements Runnable {
         int rainhasThread = Integer.parseInt(args[1]);
         int numeroThreads = rainhas / rainhasThread;
         for (int i = 0; i < numeroThreads; i++) {
+            // Inicia numeroThread instâncias do tabuleiro, onde cada uma delas será executada em
+            // uma thread.
             nQueens solucao = new nQueens(rainhas, rainhasThread, i);
-            Thread t = new Thread(solucao);
-            t.start();
+            // Roda a solução na thread.
+            Thread thread = new Thread(solucao);
+            thread.start();
             // solucao.solveProblem(0);
         }
     }
