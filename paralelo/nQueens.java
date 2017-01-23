@@ -6,6 +6,7 @@ class nQueens implements Runnable {
     int size;
     int rainhasThread;
     int numeroThread;
+    static long numeroSolucoes = 0;
     static Semaphore semaphore = new Semaphore(1);
 
     public nQueens(int size, int rainhasThread,  int thread) {
@@ -60,7 +61,7 @@ class nQueens implements Runnable {
             if(isSafe(i,col)){
                 board[i][col]=1;
                 if(parallelSolveProblem(col+1)) {
-                    //printBoard();
+                    printBoard();
                     board[i][col] = 0;
                 }
                 board[i][col]=0;
@@ -90,6 +91,7 @@ class nQueens implements Runnable {
         // tem que esperar ela terminar.
         try {
             semaphore.acquire();
+            numeroSolucoes++;
             System.out.println("Solução encontrada pela thread " + this.numeroThread);
             for (int i = 0; i < size; i++) {
                 System.out.print("\n");
@@ -119,14 +121,23 @@ class nQueens implements Runnable {
         int rainhas = Integer.parseInt(args[0]);
         int rainhasThread = Integer.parseInt(args[1]);
         int numeroThreads = rainhas / rainhasThread;
+        Thread[] threads = new Thread[numeroThreads];
         for (int i = 0; i < numeroThreads; i++) {
             // Inicia numeroThread instâncias do tabuleiro, onde cada uma delas será executada em
             // uma thread.
             nQueens solucao = new nQueens(rainhas, rainhasThread, i);
             // Roda a solução na thread.
-            Thread thread = new Thread(solucao);
-            thread.start();
-            // solucao.solveProblem(0);
+            threads[i] = new Thread(solucao);
+            threads[i].start();
+        }
+
+        try {
+            for (int i = 0; i < numeroThreads; i++) {
+                threads[i].join();
+            }
+            System.out.println("Numero de soluções encontradas: " + numeroSolucoes);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }
